@@ -1,3 +1,6 @@
+import Button from 'components/Button';
+import Dropdown from 'components/Dropdown';
+import FileSelector from 'components/FileSelector';
 import h5wasm, { File as H5File, type Group } from 'h5wasm';
 import { useMemo, useState } from 'react';
 import TrainingIteration from './TrainingIteration';
@@ -96,26 +99,18 @@ const loadFile = (fileSelectorStep: LoadFileStep) => {
 const IterationSelector = ({ fileSelectorStep }: { fileSelectorStep: SelectIterationStep | ViewIterationStep }) => {
   return (
     <>
-      <h2>Select an iteration</h2>
-      <select
-        className="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-gray-400 transition-colors duration-200 cursor-pointer min-w-[200px]"
-        onChange={(e) => {
-          const selectedIteration = e.target.value;
+      <Dropdown
+        options={fileSelectorStep.keys}
+        value={fileSelectorStep.iteration || ''}
+        optionFilter={(key: string | { value: string; label: string }) =>
+          typeof key === 'string' && key.startsWith('iteration')
+        }
+        placeholder="-- Select an iteration --"
+        onChange={(selectedIteration: string) => {
           fileSelectorStep.setIteration(selectedIteration);
           if (fileSelectorStep.current === 'selectIteration') fileSelectorStep.setStep('viewIteration');
         }}
-      >
-        <option value="" className="text-gray-500">
-          -- Select an iteration --
-        </option>
-        {fileSelectorStep.keys
-          .filter((key) => key.startsWith('iteration'))
-          .map((key) => (
-            <option key={key} value={key} className="text-gray-900">
-              {key}
-            </option>
-          ))}
-      </select>
+      />
     </>
   );
 };
@@ -123,34 +118,32 @@ const IterationSelector = ({ fileSelectorStep }: { fileSelectorStep: SelectItera
 const CurrentStep = ({ fileSelectorStep }: { fileSelectorStep: FileSelectorStep }) => {
   const ClearFileButton = useMemo(() => {
     return () => {
-      return <button onClick={() => fileSelectorStep.clear()}>Clear</button>;
+      return <Button onClick={() => fileSelectorStep.clear()}>Clear</Button>;
     };
   }, [fileSelectorStep]);
   const current = fileSelectorStep.current;
   switch (current) {
     case 'selectFile':
       return (
-        <>
-          <h2>Select File</h2>
-          <input
-            type="file"
-            accept=".hdf5,.h5"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
+        <div className="flex flex-col items-center justify-center">
+          <FileSelector
+            onFileSelect={(file) => {
               if (!file) return;
               fileSelectorStep.setFile(file);
               fileSelectorStep.setStep('loadFile');
             }}
+            accept=".hdf5,.h5"
+            placeholder="Select HDF5 file"
           />
-        </>
+        </div>
       );
     case 'loadFile':
       return (
-        <>
-          <p>{fileSelectorStep.file.name}</p>
-          <button onClick={() => loadFile(fileSelectorStep)}>Load File</button>
+        <div className="flex flex-col items-center justify-center gap-4 p-4">
+          <p>Current file: {fileSelectorStep.file.name}</p>
+          <Button onClick={() => loadFile(fileSelectorStep)}>Load File</Button>
           <ClearFileButton />
-        </>
+        </div>
       );
     case 'loadingFile':
       return (
@@ -185,10 +178,10 @@ const MainScreen = ({ FS }: { FS: FS.FileSystemType }) => {
   const fileSelectorStep = useFileSelectorStep(FS);
 
   return (
-    <div>
-      <h1>Mo-Net Visualizer</h1>
+    <>
+      <h1 className="text-2xl font-bold text-center gap-4 p-4">Mo-Net Visualizer</h1>
       <CurrentStep fileSelectorStep={fileSelectorStep} />
-    </div>
+    </>
   );
 };
 

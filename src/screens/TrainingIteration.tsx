@@ -11,8 +11,10 @@ import { colors } from 'theme';
 const ACTIVATIONS_KEY = 'activations';
 const WEIGHTS_KEY = 'weights';
 const BIASES_KEY = 'biases';
+const UPDATES_WEIGHTS_KEY = 'updates/weights';
+const UPDATES_BIASES_KEY = 'updates/biases';
 
-const HISTOGRAM_GROUPS = [WEIGHTS_KEY, BIASES_KEY, ACTIVATIONS_KEY] as const;
+const HISTOGRAM_GROUPS = [WEIGHTS_KEY, BIASES_KEY, ACTIVATIONS_KEY, UPDATES_WEIGHTS_KEY, UPDATES_BIASES_KEY] as const;
 
 const HIST_COUNT_KEY = 'histogram_values';
 const HIST_BINS_KEY = 'histogram_bins';
