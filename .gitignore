@@ -25,3 +25,9 @@ yarn-error.log*
 
 # data
 data/
+<<<<<<< HEAD
+
+# vscode
+=======
+>>>>>>> a0d9629 (WIP: Histogram Screen)
+.vscode/
