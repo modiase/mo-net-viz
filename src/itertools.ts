@@ -21,6 +21,6 @@ export const pairwise = <T>(arr: readonly T[]): readonly Pair<T>[] => {
 export const pairs = <T>(arr: readonly T[]): readonly Pair<T>[] => {
   return pipe(
     RA.chunksOf(2)(arr) as readonly Pair<T>[],
-    RA.map((p) => (p.length == 2 ? p : ([p[0], p[0]] as Pair<T>)))
+    RA.map((p) => (p.length === 2 ? p : ([p[0], p[0]] as Pair<T>)))
   );
 };
